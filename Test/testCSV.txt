@@ -1,0 +1,21 @@
+*** Settings ***
+Library           ../Libraries/CSVLibrary.py
+
+*** Test Cases ***
+Get Csv Column
+    comment    Main steps
+    ${data}    Get Csv Column    Data/test.csv    Name
+    ${expect}    Create List    Lex    Dora    Alan    Lex
+    Should Be Equal    ${data}    ${expect}
+
+Lookup Csv Value
+    comment    Main steps
+    ${data}    Lookup Csv Value    Data/test.csv    Name    Lex    Title    2
+    ${expect}    Set Variable    Dev
+    Should Be Equal    ${data}    ${expect}
+
+Lookup Csv Row
+    comment    Main steps
+    ${data}    Lookup Csv Row    Data/test.csv    Name    Lex    2
+    ${expect}    Create Dictionary    Name=Lex    Age=30    Title=Dev
+    Should Be Equal    ${data}    ${expect}
