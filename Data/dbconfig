@@ -1,0 +1,7 @@
+dbServer=localhost
+dbPort=61445
+dbUser=sa
+dbPassword=1234aa
+dbDataBase=northwind
+dbQueryTimeout=0
+dbLoginTimeout=60

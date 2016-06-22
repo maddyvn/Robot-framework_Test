@@ -1,5 +1,7 @@
 *** Settings ***
 Library           ../Libraries/CSVLibrary.py
+Library           ../Libraries/DBLibrary.py
+Library           Collections
 
 *** Test Cases ***
 Get Csv Column
@@ -19,3 +21,10 @@ Lookup Csv Row
     ${data}    Lookup Csv Row    Data/test.csv    Name    Lex    2
     ${expect}    Create Dictionary    Name=Lex    Age=30    Title=Dev
     Should Be Equal    ${data}    ${expect}
+
+test DB
+    Connect To Database By CfFile    Data${/}dbconfig
+    Get Query Result Csv    select top 5 * from Customers    Data${/}output.csv
+    Disconnect From Database
+    ${ac_file}    Read Csv File    Data${/}output.csv    True
+    Log List    ${ac_file}
