@@ -24,7 +24,8 @@ Lookup Csv Row
 
 test DB
     Connect To Database By CfFile    Data${/}dbconfig
-    Get Query Result Csv    select top 5 * from Customers    Data${/}output.csv
-    Disconnect From Database
+    Get Query Result Csv    select top 2 * from Customers    Data${/}output.csv
     ${ac_file}    Read Csv File    Data${/}output.csv    True
     Log List    ${ac_file}
+    Get Query Result Excel    select top 2 * from Customers    Data${/}output.xlsx
+    Disconnect From Database
