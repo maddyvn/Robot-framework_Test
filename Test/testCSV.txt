@@ -1,7 +1,12 @@
 *** Settings ***
+Test Teardown     Close All Browsers
+Library           Collections
+Library           Selenium2Library
 Library           ../Libraries/CSVLibrary.py
 Library           ../Libraries/DBLibrary.py
-Library           Collections
+Library           ../Libraries/Selenium2Extend.py
+Resource          ../Interfaces/yahoo.txt
+Resource          ../Interfaces/twitter.txt
 
 *** Test Cases ***
 Get Csv Column
@@ -29,3 +34,18 @@ test DB
     Log List    ${ac_file}
     Get Query Result Excel    select top 2 * from Customers    Data${/}output.xlsx
     Disconnect From Database
+
+testCustomAction
+    Set Log Level    DEBUG
+    Open Browser    https://twitter.com/
+    # Test exists & visible
+    ${ac_exists}    Does Element Exists    ${txtEmail}
+    ${ac_visible}    Is Element Visible    ${txtEmail}
+    ${ac_enabled}    Is Element Clickable    ${txtEmail}
+    # Test text present
+    ${ac_text_present}    Is Text Present In Element    ${txtEmail}    abc
+    Input Text    ${txtEmail}    abc
+    ${ac_text_present}    Is Text Present In Element    ${txtEmail}    abc
+    # Test invisible
+    ${ac_invisible}    Is Element Invisible    ${divHidden}
+    ${ac_visible}    Is Element Visible    ${divHidden}
