@@ -13,28 +13,27 @@ from selenium.webdriver.support import expected_conditions as EC
 		- Import as custom library
 		- Call method on current focused WebDriver (browser) of Selenium2Library
 	
-	Author: lex.khuat@starixsoft.vn
 	Version: 1.0
 '''
 
-class Locator(object):
+class myElement(object):
 	def __init__(self, locator):
 		address = str(locator).split('=', 1)
-		self._By = address[0]	#By.class
-		self._Loc = address[1]	#Locator address
+		self._elem = address[0], address[1]	#By.class, value
 		self._validate_locator()
 		
 	def _validate_locator(self):
-		if not By.is_valid(self._By):
-			raise Exception('ERROR: Wrong definion of locator: ' + self._By + '=' + self._Loc)
-
-def _get_driver():
-	selenium2 = BuiltIn().get_library_instance('Selenium2Library')
-	return selenium2._current_browser()
-
-def _timeOut(s): return 0 if int(s) < 0 else int(s)
-def _wait(s): return WebDriverWait(_get_driver(), _timeOut(s))
+		if not By.is_valid(self._elem[0]): raise Exception('ERROR: Wrong definion of locator: ' + self._elem[0] + '=' + self._elem[1])
 	
+	def _myElem(self): return self._elem
+
+def _driver(): return BuiltIn().get_library_instance('Selenium2Library')._current_browser()
+def _timeOut(s): return 0 if int(s) < 0 else int(s)
+def _wait(s): return WebDriverWait(_driver(), _timeOut(s))
+
+##################### Verify element conditions ##################
+##################################################################
+
 def is_element_visible(locator, timeOut=0):
 	'''
 		An expectation for checking that an element is present on the DOM of a page and visible.\n
@@ -42,8 +41,7 @@ def is_element_visible(locator, timeOut=0):
 		Locator - used to find the element returns True once it is located and visible
 	'''
 	logger.debug('Check if element ' + locator + ' is visible for ' + str(_timeOut(timeOut)) + ' seconds')
-	loc = Locator(locator)
-	try: _wait(timeOut).until(EC.visibility_of_element_located((loc._By, loc._Loc)))
+	try: _wait(timeOut).until(EC.visibility_of_element_located(myElement(locator)._myElem()))
 	except Exception: return False
 	return True
 	
@@ -54,8 +52,7 @@ def does_element_exists(locator, timeOut=0):
 		Locator - used to find the element returns True once it is located
 	'''
 	logger.debug('Check if element ' + locator + ' exists for ' + str(_timeOut(timeOut)) + ' seconds')
-	loc = Locator(locator)
-	try: _wait(timeOut).until(EC.presence_of_element_located((loc._By, loc._Loc)))
+	try: _wait(timeOut).until(EC.presence_of_element_located(myElement(locator)._myElem()))
 	except Exception: return False
 	return True
 
@@ -64,8 +61,7 @@ def is_element_clickable(locator, timeOut=0):
 		An Expectation for checking an element is visible and enabled such that you can click it.
 	'''
 	logger.debug('Check if element ' + locator + ' is enabled for ' + str(_timeOut(timeOut)) + ' seconds')
-	loc = Locator(locator)
-	try: _wait(timeOut).until(EC.element_to_be_clickable((loc._By, loc._Loc)))
+	try: _wait(timeOut).until(EC.element_to_be_clickable(myElement(locator)._myElem()))
 	except Exception: return False
 	return True
 
@@ -75,8 +71,7 @@ def is_element_invisible(locator, timeOut=0):
 		Locator used to find the element
 	'''
 	logger.debug('Check if element ' + locator + ' is invisible for ' + str(_timeOut(timeOut)) + ' seconds')
-	loc = Locator(locator)
-	try: _wait(timeOut).until(EC.invisibility_of_element_located((loc._By, loc._Loc)))
+	try: _wait(timeOut).until(EC.invisibility_of_element_located(myElement(locator)._myElem()))
 	except Exception: return False
 	return True
 
@@ -85,18 +80,15 @@ def is_element_selected(locator, timeOut=0):
 		An expectation for the element to be located is selected
 	'''
 	logger.debug('Check if element ' + locator + ' is invisible for ' + str(_timeOut(timeOut)) + ' seconds')
-	loc = Locator(locator)
-	try: _wait(timeOut).until(EC.element_located_to_be_selected((loc._By, loc._Loc)))
+	try: return _wait(timeOut).until(EC.element_located_to_be_selected(myElement(locator)._myElem()))
 	except Exception: return False
-	return True
 
 def is_text_present_in_element(locator, text, timeOut=0):
 	'''
 		An expectation for checking if the given text is present in the specified element\n
 	'''
 	logger.debug('Check if a text is present in element ' + locator + ' for ' + str(_timeOut(timeOut)) + ' seconds')
-	loc = Locator(locator)
-	try: _wait(timeOut).until(EC.text_to_be_present_in_element_value((loc._By, loc._Loc), text))
+	try: _wait(timeOut).until(EC.text_to_be_present_in_element_value(myElement(locator)._myElem(), text))
 	except Exception: return False
 	return True
 
@@ -115,8 +107,7 @@ def is_frame_available(locator, timeOut=0):
 		If the frame is available it switches the given driver to the specified frame
 	'''
 	logger.debug('Check if the frame ' + locator + ' is available to switch to it for ' + str(_timeOut(timeOut)) + ' seconds')
-	loc = Locator(locator)
-	try: _wait(timeOut).until(EC.frame_to_be_available_and_switch_to_it((loc._By, loc._Loc)))
+	try: _wait(timeOut).until(EC.frame_to_be_available_and_switch_to_it(myElement(locator)._myElem()))
 	except Exception: return False
 	return True
 

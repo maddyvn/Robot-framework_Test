@@ -1,5 +1,5 @@
 *** Variables ***
-${txtEmail}       id=signin-email
-${chkRemember}    name=remember_me
+${txtEmail}       xpath=//*[@id='signin-email']
+${chkRemember}    xpath=//*[@name='remember_me']
 ${lnkForgot}      xpath=//div[@class='remember-forgot']/a[@class='forgot']
 ${divHidden}      id=hidden-content
