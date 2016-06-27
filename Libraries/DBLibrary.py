@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: <uat-8> -*-
+# -*- coding: utf-8 -*-
 
 import pymssql
 import csv
@@ -61,7 +61,8 @@ class DBLibrary(object):
 	
 	def get_query_result_csv(self, sql, csvFile):
 		"""
-			Build a csv file from result set of the sql command
+			Build a csv file from result set of the sql command \n
+			Example: get query result csv		select * from customer		test.csv
 		"""
 		
 		cur = self._dbconnection.cursor()
@@ -80,19 +81,29 @@ class DBLibrary(object):
 				
 	def get_query_result_excel(self, sql, excelFile):
 		"""
-			Build an excel file from result set of the sql command
+			Build an excel file from result set of the sql command \n
+			Example: get query result excel		select * from customer		test.xlsx
 		"""
 		
 		cur = self._dbconnection.cursor()
 		cur.execute(sql + ';')
 		rows = cur.fetchall()
 		
+		workbook = Workbook(excelFile)
+		sheet = workbook.add_worksheet()
+		
+		# Get columns list
 		columns = []
 		for column in cur.description:
 			columns.append(column[0])
 		
-		workbook = Workbook(excelFile)
-		sheet = workbook.add_worksheet()
+		# Write header column
+		for i, val in enumerate(columns):
+			sheet.write(0, i, val)
+		
+		# Write table data
 		for r, row in enumerate(rows):
 			for c, col in enumerate(row):
-				sheet.write(r, c, col)
+				sheet.write(r+1, c, unicode(col).encode('utf-8'))
+		
+		workbook.close()
