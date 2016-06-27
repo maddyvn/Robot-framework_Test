@@ -1,0 +1,8 @@
+*** Variables ***
+${google_url}     https://www.google.com.vn
+${txtSearch}      id=lst-ib
+${btnSearch}      name=btnK
+${divGHidden}     name=sclient
+${lnkEnglish}     xpath=//*[@id='_eEe']/*[1]
+${lblOffer}       id=_eEe
+${logo}           xpath=//div[@id='logocont']/h1/a[@id='logo']
