@@ -1,14 +1,6 @@
 *** Settings ***
-Test Teardown     Close All Browsers
 Library           Collections
-Library           Selenium2Library
 Library           ../Libraries/CSVLibrary.py
-Library           ../Libraries/DBLibrary.py
-Library           ../Libraries/Selenium2Extend.py
-Resource          ../Interfaces/yahoo.txt
-Resource          ../Interfaces/twitter.txt
-Resource          ../Interfaces/yahoo_mail.txt
-Resource          ../Interfaces/google.txt
 
 *** Test Cases ***
 Get Csv Column
@@ -28,61 +20,3 @@ Lookup Csv Row
     ${data}    Lookup Csv Row    Data/test.csv    Name    Lex    2
     ${expect}    Create Dictionary    Name=Lex    Age=30    Title=Dev
     Should Be Equal    ${data}    ${expect}
-
-test DB
-    Connect To Database By CfFile    Data${/}dbconfig
-    Get Query Result Csv    select top 2 * from Customers    Data${/}output.csv
-    ${ac_file}    Read Csv File    Data${/}output.csv    True
-    Log List    ${ac_file}
-    Get Query Result Excel    select top 2 * from Customers    Data${/}output.xlsx
-    ${ac_list}    Get Query Result list    select top 2 * from Customers    True
-    Log List    ${ac_list}
-    ${ac_list}    Get Query Result dict    select top 2 * from Customers
-    Log List    ${ac_list}
-    Disconnect From Database
-
-testSQLString
-    ${ac_list}    Create List    10    20    30
-    ${ac_sql}    format List To String    ${ac_list}    String
-    ${ac_sql}    format List To String    ${ac_list}    Number
-
-testCustomAction
-    Set Log Level    TRACE
-    Open Browser    ${google_url}    ff
-    log    Test exists & visible
-    ${ac_exists}    Does Element Exists    ${txtSearch}
-    Should Be True    ${ac_exists}    Verify exists
-    ${ac_visible}    Is Element Visible    ${txtSearch}
-    Should Be True    ${ac_visible}    Verify visible
-    ${ac_invisible}    Is Element Invisible    ${txtSearch}
-    Should Not Be True    ${ac_invisible}    Verify invisible
-    ${ac_enabled}    Is Element Clickable    ${txtSearch}
-    Should Be True    ${ac_enabled}    Verify clickable
-    ${ac_selected}    Is Element Selected    ${txtSearch}
-    Should Not Be True    ${ac_selected}    Verify not checkbox
-    log    Test invisible
-    ${ac_exists}    Does Element Exists    ${divGHidden}
-    Should Be True    ${ac_exists}    Verify exists
-    ${ac_invisible}    Is Element Invisible    ${divGHidden}
-    Should Be True    ${ac_invisible}    Verify invisible
-    ${ac_visible}    Is Element Visible    ${divGHidden}
-    Should Not Be True    ${ac_visible}    Verify visible
-    log    Test text present
-    ${ac_text_present}    Is Text Present In Element    ${txtSearch}    abc
-    Should Not Be True    ${ac_text_present}    Verify text not present abc
-    Focus    ${btnSearch}
-    log    Input text abc
-    Key Input    abc    ${txtSearch}
-    ${ac_text_present}    Is Text Present In Element    ${txtSearch}    abc
-    Should Be True    ${ac_text_present}    Verify text present abc
-    log    Select all text
-    Key Select All    ${txtSearch}
-    log    Copy Ctrl + C
-    Key Copy    ${txtSearch}
-    log    Clear current text
-    Clear Element Text    ${txtSearch}
-    Focus    ${btnSearch}
-    log    Paste copied text again
-    Key Paste    ${txtSearch}
-    ${ac_text_present}    Is Text Present In Element    ${txtSearch}    abc
-    Should Be True    ${ac_text_present}    Verify text present abc

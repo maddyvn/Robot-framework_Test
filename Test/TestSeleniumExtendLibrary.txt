@@ -1,0 +1,68 @@
+*** Settings ***
+Suite Setup       setup
+Suite Teardown    close
+Library           ../Libraries/Selenium2Extend.py
+Library           Selenium2Library
+
+*** Variables ***
+${google_url}     https://www.google.com.vn
+${txtSearch}      id=lst-ib
+${btnSearch}      name=btnK
+${divGHidden}     name=sclient
+${lnkEnglish}     xpath=//*[@id='_eEe']/*[1]
+${lblOffer}       id=_eEe
+${logo}           xpath=//div[@id='logocont']/h1/a[@id='logo']
+
+*** Test Cases ***
+Test exists
+    # Steps
+    log    Test exists & visible
+    ${ac_exists}    Does Element Exists    ${txtSearch}
+    Should Be True    ${ac_exists}    Verify exists
+    ${ac_visible}    Is Element Visible    ${txtSearch}
+    Should Be True    ${ac_visible}    Verify visible
+    ${ac_invisible}    Is Element Invisible    ${txtSearch}
+    Should Not Be True    ${ac_invisible}    Verify invisible
+    ${ac_enabled}    Is Element Clickable    ${txtSearch}
+    Should Be True    ${ac_enabled}    Verify clickable
+    ${ac_selected}    Is Element Selected    ${txtSearch}
+    Should Not Be True    ${ac_selected}    Verify not checkbox
+
+Test invisible
+    # Steps
+    log    Test invisible
+    ${ac_exists}    Does Element Exists    ${divGHidden}
+    Should Be True    ${ac_exists}    Verify exists
+    ${ac_invisible}    Is Element Invisible    ${divGHidden}
+    Should Be True    ${ac_invisible}    Verify invisible
+    ${ac_visible}    Is Element Visible    ${divGHidden}
+    Should Not Be True    ${ac_visible}    Verify visible
+
+Test text present
+    # Steps
+    log    Test text present
+    ${ac_text_present}    Is Text Present In Element    ${txtSearch}    abc
+    Should Not Be True    ${ac_text_present}    Verify text not present abc
+    Focus    ${btnSearch}
+    log    Input text abc
+    Key Input    abc    ${txtSearch}
+    ${ac_text_present}    Is Text Present In Element    ${txtSearch}    abc
+    Should Be True    ${ac_text_present}    Verify text present abc
+    log    Select all text
+    Key Select All    ${txtSearch}
+    log    Copy Ctrl + C
+    Key Copy    ${txtSearch}
+    log    Clear current text
+    Clear Element Text    ${txtSearch}
+    Focus    ${btnSearch}
+    log    Paste copied text again
+    Key Paste    ${txtSearch}
+    ${ac_text_present}    Is Text Present In Element    ${txtSearch}    abc
+    Should Be True    ${ac_text_present}    Verify text present abc
+
+*** Keywords ***
+setup
+    Open Browser    ${google_url}    ff
+
+close
+    Close All Browsers

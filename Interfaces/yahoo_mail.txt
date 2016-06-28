@@ -1,3 +1,0 @@
-*** Variables ***
-${txtUser}        id=login-username
-${chkRem}         id=persistent

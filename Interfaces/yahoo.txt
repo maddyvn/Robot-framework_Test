@@ -1,3 +1,0 @@
-*** Variables ***
-${txtYahooSearch}    id=UHSearchBox
-${txtHidden}      id=fdb_close_els
