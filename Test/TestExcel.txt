@@ -1,0 +1,33 @@
+*** Settings ***
+Library           Collections
+Library           ../Libraries/ExcelLibrary.py
+
+*** Variables ***
+${testExcel}      ${CURDIR}${/}..${/}Data${/}test.xlsx
+
+*** Test Cases ***
+Get Sheet Content In List
+    ${list}    Get Sheet Content In List    ${testExcel}    Sheet1    True
+    log list    ${list}
+    ${list}    Get Sheet Content In List    ${testExcel}    Sheet1    False
+    log list    ${list}
+
+Get Sheet Content In Dict
+    ${list}    Get Sheet Content In Dict    ${testExcel}    Sheet1
+    Log List    ${list}
+
+Get Row By Index
+    ${row}    Get Row By Index    ${testExcel}    Sheet1    1
+    ${row}    Get Row By Index    ${testExcel}    Sheet1    2
+    ${row}    Get Row By Index    ${testExcel}    Sheet1    3
+    ${row}    Get Row By Index    ${testExcel}    Sheet1    4
+    ${row}    Get Row By Index    ${testExcel}    Sheet1    5
+    ${row}    Get Row By Index    ${testExcel}    Sheet1    6
+    ${row}    Get Row By Index    ${testExcel}    Sheet1    7
+    ${row}    Get Row By Index    ${testExcel}    Sheet1    8
+
+Get Row By Reference
+    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Name    Lex
+    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Title    QC
+    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Age    30
+    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Money    16.7635
