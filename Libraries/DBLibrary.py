@@ -23,14 +23,12 @@ class DBLibrary(object):
 	
 	def __init__(self): self._dbconnection = None	#Database connection
 	
-	def _isFloat(self, s):
+	def _isfloat(self, s):
 		try: float(str(s)) # for int, long and float
-		except ValueError:
-			try: complex(str(s)) # for complex
-			except ValueError: return False
+		except ValueError: return False
 		return True
 	
-	def _f(self, s): return float(str(s)) if self._isFloat(s) else s
+	def _f(self, s): return str(s).rstrip('0').rstrip('.') if '.' in str(s) else s if self._isfloat(s) else s
 	
 	def connect_to_database(self, dbServer, dbUser, dbPass, dbDatabase, dbPort=1433, dbQTimeout=0, dbLoginTimeout=60, charSet='UTF-8'):
 		'''
@@ -74,11 +72,13 @@ class DBLibrary(object):
 		cur.execute(sql + ';')
 		rows = cur.fetchall()
 		
-		with open(csvFile, "wb") as outfile:
-			writer = csv.writer(outfile)
-			if header.lower() == 'true': writer.writerow([column[0] for column in cur.description])	#Write header column
-			for row in rows: writer.writerow([unicode(self._f(s)).encode("utf-8") for s in row])
-	
+		try:
+			with open(csvFile, "wb") as outfile:
+				writer = csv.writer(outfile)
+				if header.lower() == 'true': writer.writerow([column[0] for column in cur.description])	#Write header column
+				for row in rows: writer.writerow([unicode(self._f(s)).encode("utf-8") for s in row])
+		except Exception: raise TypeError(print_stack())
+		
 	def format_list_to_string(self, list, type='Number'):
 		'''
 			Return a string from a list with sql formated. Useful for IN condition
@@ -95,13 +95,14 @@ class DBLibrary(object):
 		cur = self._dbconnection.cursor()
 		cur.execute(sql + ';')
 		rows = cur.fetchall()
+		print(cur.description)
 		
 		workbook = Workbook(excelFile)
 		sheet = workbook.add_worksheet()
 		format = workbook.add_format({'bold': True})
 		
 		if header.lower() == 'true':
-			for i, val in enumerate([column[0] for column in cur.description]): sheet.write(0, i, val, format)	#Write header column
+			for i, val in enumerate([column[0] for column in cur.description]): sheet.write(0, i, self._f(val), format)	#Write header column
 		for r, row in enumerate(rows):
 			for c, s in enumerate(row): sheet.write(r+1, c, self._f(s)) # Write table data
 		workbook.close()
