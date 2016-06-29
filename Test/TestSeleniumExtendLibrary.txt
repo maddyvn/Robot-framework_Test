@@ -60,6 +60,48 @@ Test text present
     ${ac_text_present}    Is Text Present In Element    ${txtSearch}    abc
     Should Be True    ${ac_text_present}    Verify text present abc
 
+Test window handle
+    ${googleimg}    Open Browser    https://www.google.com.vn/imghp    ff    googleimg
+    ${googlePhoto}    Open Browser    https://www.google.com/photos/about/    ff    googlePHOTO
+    ${mainExist}    Is Browser Opened    main
+    ${googlePhotoExist}    Is Browser Opened    googlePHOTO
+    ${googleimgExists}    Is Browser Opened    googleimg
+    ${firstExists}    Is Browser Opened    1
+    ${secondExists}    Is Browser Opened    2
+    ${thirdExits}    Is Browser Opened    3
+    ${fouthExits}    Is Browser Opened    4
+    comment    Test By alias
+    Should Be True    ${googlePhotoExist}    googlePhoto should exits
+    Should Not Be True    ${mainExist}    main should not exits
+    Should Be True    ${googleimgExists}    googleimg should exits
+    comment    Test By index
+    Should Be True    ${firstExists}    first index should exists
+    Should Be True    ${secondExists}    second index should exists
+    Should Be True    ${thirdExits}    third index should exists
+    Should Not Be True    ${fouthExits}    fouth index should not exists
+    comment    Test get alias
+    ${focusedBrowser}    Get Focused Browser
+    Switch Browser    googlePHOTO
+    ${focusedAlias}    Get Focused Browser Alias
+    Switch Browser    googleimg
+    ${focusedAlias}    Get Focused Browser Alias
+    Switch Browser    1
+    ${focusedAlias}    Get Focused Browser Alias
+    ${Openedlist}    Get Opened Browsers
+    ${Closedlist}    Get Closed Browsers
+    comment    Test close browser
+    Close Browser By Alias    main
+    Close Browser By Alias    googlePHOTO
+    ${googlePhotoExist}    Is Browser Opened    googlePHOTO
+    Should Not Be True    ${googlePhotoExist}    googlePhoto should exits
+    Close Browser By Alias    1
+    ${googleimgExists}    Is Browser Opened    googleimg
+    Should Be True    ${googleimgExists}    googleimg should exits
+    Close Browser By Alias    2
+    ${googleimgExists}    Is Browser Opened    googleimg
+    Should Not Be True    ${googleimgExists}    googleimg should not exits
+    ${Closedlist}    Get Closed Browsers
+
 *** Keywords ***
 setup
     Open Browser    ${google_url}    ff

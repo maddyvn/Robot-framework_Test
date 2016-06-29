@@ -9,30 +9,26 @@ ${configFile}     ${CURDIR}${/}..${/}Data${/}dbconfig
 *** Test Cases ***
 Get Query Result dict
     Connect To Database By CfFile    ${configFile}
-    ${ac_list}    Get Query Result dict    select distinct productid*Discount as Price from [Order Details]
+    ${ac_list}    Get Query Result dict    select * from Customers
     Disconnect From Database
 
 Get Query Result list
     Connect To Database By CfFile    ${configFile}
     ${ac_list}    Get Query Result List    select distinct productid*Discount as Price from [Order Details]    True
-    Log List    ${ac_list}
     ${ac_list}    Get Query Result List    select * from Customers    False
-    Log List    ${ac_list}
     Disconnect From Database
 
 Get Query Result Excel
     Connect To Database By CfFile    ${configFile}
-    Get Query Result Excel    select distinct OrderID, ProductID, case when Discount > 0 then UnitPrice*Quantity*Discount else UnitPrice*Quantity end as Price from [Order Details]    ${CURDIR}${/}..${/}Report${/}TestDBLibrary.xlsx    True
+    Get Query Result Excel    select * from Customers    ${CURDIR}${/}..${/}Report${/}TestDBLibrary.xlsx    True
     Disconnect From Database
 
 Get Query Result Csv
     Connect To Database By CfFile    ${configFile}
     Get Query Result Csv    select distinct OrderID, ProductID, case when Discount > 0 then UnitPrice*Quantity*Discount else UnitPrice*Quantity end as Price from [Order Details]    ${CURDIR}${/}..${/}Report${/}TestDBLibrary.csv    True
     ${list}    Read Csv File    ${CURDIR}${/}..${/}Report${/}TestDBLibrary.csv    True
-    Log List    ${list}
     Get Query Result Csv    select * from Customers    ${CURDIR}${/}..${/}Report${/}TestDBLibrary2.csv    False
     ${list}    Read Csv File    ${CURDIR}${/}..${/}Report${/}TestDBLibrary2.csv    True
-    Log List    ${list}
     Disconnect From Database
 
 format List To String

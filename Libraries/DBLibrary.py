@@ -28,7 +28,9 @@ class DBLibrary(object):
 		except ValueError: return False
 		return True
 	
-	def _f(self, s): return str(s).rstrip('0').rstrip('.') if '.' in str(s) else s if self._isfloat(s) else s
+	def _f(self, s):
+		#return str(s).rstrip('0').rstrip('.') if '.' in str(s) else s if self._isfloat(s) else s
+		return s
 	
 	def connect_to_database(self, dbServer, dbUser, dbPass, dbDatabase, dbPort=1433, dbQTimeout=0, dbLoginTimeout=60, charSet='UTF-8'):
 		'''
@@ -72,12 +74,10 @@ class DBLibrary(object):
 		cur.execute(sql + ';')
 		rows = cur.fetchall()
 		
-		try:
-			with open(csvFile, "wb") as outfile:
-				writer = csv.writer(outfile)
-				if header.lower() == 'true': writer.writerow([column[0] for column in cur.description])	#Write header column
-				for row in rows: writer.writerow([unicode(self._f(s)).encode("utf-8") for s in row])
-		except Exception: raise TypeError(print_stack())
+		with open(csvFile, "wb") as outfile:
+			writer = csv.writer(outfile)
+			if header.lower() == 'true': writer.writerow([column[0] for column in cur.description])	#Write header column
+			for row in rows: writer.writerow([unicode(self._f(s)).encode("utf-8") for s in row])
 		
 	def format_list_to_string(self, list, type='Number'):
 		'''
@@ -125,6 +125,8 @@ class DBLibrary(object):
 		rows = cur.fetchall()
 		
 		data = []
-		if header.lower() == 'true': data.append([column[0] for column in cur.description]) 	#Write header column
-		for row in rows: data.append([self._f(s) for s in row])
-		return data
+		try:
+			if header.lower() == 'true': data.append([column[0] for column in cur.description]) 	#Write header column
+			for row in rows: data.append([self._f(s) for s in row])
+			return data
+		except Exception as err: raise RuntimeError(err)

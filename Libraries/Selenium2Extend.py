@@ -31,6 +31,7 @@ class Element(object):
 	def _get(self): return self._elem
 
 def _driver(): return BuiltIn().get_library_instance('Selenium2Library')._current_browser()
+def _cache(): return BuiltIn().get_library_instance('Selenium2Library')._cache
 def _action(): return ActionChains(_driver())
 def _timeOut(s): return 0 if int(s) < 0 else int(s)
 def _wait(s): return WebDriverWait(_driver(), _timeOut(s))
@@ -123,6 +124,64 @@ def is_title_contains(text, timeOut=0):
 		Title is the expected title, which must be an exact match returns True if the title matches, false otherwise.
 	'''
 	return _wait(timeOut).until(EC.title_contains(text))
+
+def get_opened_browsers():
+	'''
+		Return all opened browser instances in a list
+	'''
+	return _cache().get_open_browsers()
+	
+def get_closed_browsers():
+	'''
+		Return all closed browser instances in a list
+	'''
+	return _cache()._closed
+	
+def get_focused_browser():
+	'''
+		Return the current focused browser instance
+	'''
+	return _cache().current
+
+def get_focused_browser_alias():
+	'''
+		Return the current focused browser alias. If no browsers or focused browser does not has alias return None
+	'''
+	cur = get_focused_browser()
+	for i, b in enumerate(get_opened_browsers()):
+		if cur == b:
+			try: return _cache()._aliases._data.keys()[_cache()._aliases._data.values().index(i+1)]
+			except Exception: return None
+	
+def is_browser_opened(alias_or_index=None):
+	'''
+		Check whether the browser exists or not by non-casesensitive registered alias or index\n
+		If no index or alias is used, if at least 1 instance of WebDriver is opened will return true
+	'''
+	if alias_or_index == None:
+		return True if len(get_opened_browsers()) > 0 else False
+		
+	try: browser = _cache().get_connection(alias_or_index.lower())
+	except RuntimeError: return False
+	
+	for i, b in enumerate(get_opened_browsers()):
+		if browser == b: return True
+	return False
+	
+def close_browser_by_alias(alias_or_index):
+	'''
+		Switch then close an opening browser with the expected alias or index. Do nothing if no browsers are found with the expected alias\n
+		Return True/False for successfully/fail close action
+	'''
+	if is_browser_opened(alias_or_index):
+		try:
+			_cache().switch(alias_or_index.lower())
+			_cache().close()
+			return True
+		except Exception: raise Exception('Failed to close browser instance by runtime error.')
+	else:
+		print('Skip due to found no browsers with the alias: \'' + str(alias_or_index) + '\' to close')
+		return False
 	
 def move_to_element(locator):
 	'''
