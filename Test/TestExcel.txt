@@ -6,28 +6,74 @@ Library           ../Libraries/ExcelLibrary.py
 ${testExcel}      ${CURDIR}${/}..${/}Data${/}test.xlsx
 
 *** Test Cases ***
-Get Sheet Content In List
-    ${list}    Get Sheet Content In List    ${testExcel}    Sheet1    True
+Get Sheet Content
+    Log    Get as list
+    ${list}    Get Sheet Content    ${testExcel}    Sheet1    False    True
     log list    ${list}
-    ${list}    Get Sheet Content In List    ${testExcel}    Sheet1    False
+    ${list}    Get Sheet Content    ${testExcel}    Sheet1    False    False
     log list    ${list}
-
-Get Sheet Content In Dict
-    ${list}    Get Sheet Content In Dict    ${testExcel}    Sheet1
+    Log    Get as dict
+    ${list}    Get Sheet Content    ${testExcel}    Sheet1    True
     Log List    ${list}
 
 Get Row By Index
-    ${row}    Get Row By Index    ${testExcel}    Sheet1    1
-    ${row}    Get Row By Index    ${testExcel}    Sheet1    2
-    ${row}    Get Row By Index    ${testExcel}    Sheet1    3
-    ${row}    Get Row By Index    ${testExcel}    Sheet1    4
-    ${row}    Get Row By Index    ${testExcel}    Sheet1    5
-    ${row}    Get Row By Index    ${testExcel}    Sheet1    6
-    ${row}    Get Row By Index    ${testExcel}    Sheet1    7
-    ${row}    Get Row By Index    ${testExcel}    Sheet1    8
+    ${row1}    Get Row By Index    ${testExcel}    Sheet1    1
+    ${row2}    Get Row By Index    ${testExcel}    Sheet1    2
+    ${row3}    Get Row By Index    ${testExcel}    Sheet1    3
+    ${row4}    Get Row By Index    ${testExcel}    Sheet1    4
+    ${row5}    Get Row By Index    ${testExcel}    Sheet1    5
+    ${row6}    Get Row By Index    ${testExcel}    Sheet1    6
+    ${row7}    Get Row By Index    ${testExcel}    Sheet1    7
+    ${row8}    Get Row By Index    ${testExcel}    Sheet1    8
 
 Get Row By Reference
-    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Name    Lex
-    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Title    QC
-    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Age    30
-    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Money    16.7635
+    LOG    Test rows
+    log    Get by:Name Lex
+    ${row}    Get Rows By Reference    ${testExcel}    Sheet1    Name    Lex
+    log    Get by:Title DBA
+    ${row}    Get Rows By Reference    ${testExcel}    Sheet1    Title    DBA
+    log    Get by:Age 27
+    ${row}    Get Rows By Reference    ${testExcel}    Sheet1    Age    27
+    log    Get by:Money 16.7635
+    ${row}    Get Rows By Reference    ${testExcel}    Sheet1    Money    16.7635
+    LOG    Test row
+    log    Get by:Title DBA 1
+    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Title    DBA    1
+    log    Get by:Title DBA 2
+    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Title    DBA    2
+    log    Get by:Title DBA 3
+    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Title    DBA    3
+    log    Get by:Title DBA -1
+    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Title    DBA    -1
+    log    Get by:Title DBA 0
+    ${row}    Get Row By Reference    ${testExcel}    Sheet1    Title    DBA    0
+
+Get Cell Value By Index
+    Log    Get by column
+    ${a}    Get Cell Value By Index    ${testExcel}    Sheet1    2    1
+    ${a}    Get Cell Value By Index    ${testExcel}    Sheet1    2    2
+    ${a}    Get Cell Value By Index    ${testExcel}    Sheet1    2    3
+    ${a}    Get Cell Value By Index    ${testExcel}    Sheet1    2    4
+    Log    Get by row
+    ${a}    Get Cell Value By Index    ${testExcel}    Sheet1    1    2
+    ${a}    Get Cell Value By Index    ${testExcel}    Sheet1    2    2
+    ${a}    Get Cell Value By Index    ${testExcel}    Sheet1    3    2
+    ${a}    Get Cell Value By Index    ${testExcel}    Sheet1    4    2
+    Log    Get invalid
+    ${a}    Get Cell Value By Index    ${testExcel}    Sheet1    9    2
+    ${a}    Get Cell Value By Index    ${testExcel}    Sheet1    2    9
+
+Get Cell Value By Reference
+    ${Age}    Get Cell Value By Reference    ${testExcel}    Sheet1    Name    Lex    Age
+    ...    1
+    ${Title}    Get Cell Value By Reference    ${testExcel}    Sheet1    Name    Lex    Title
+    ...    1
+
+Get Row By Index As Dict
+    ${row1}    Get Row By Index As Dict    ${testExcel}    Sheet1    1
+    ${row2}    Get Row By Index As Dict    ${testExcel}    Sheet1    2
+    ${row3}    Get Row By Index As Dict    ${testExcel}    Sheet1    3
+    ${row4}    Get Row By Index As Dict    ${testExcel}    Sheet1    4
+    ${row5}    Get Row By Index As Dict    ${testExcel}    Sheet1    5
+    ${row6}    Get Row By Index As Dict    ${testExcel}    Sheet1    6
+    ${row7}    Get Row By Index As Dict    ${testExcel}    Sheet1    7

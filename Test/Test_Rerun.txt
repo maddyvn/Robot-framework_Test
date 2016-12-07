@@ -1,0 +1,14 @@
+*** Settings ***
+Force Tags        Rerun
+Library           String
+
+*** Test Cases ***
+Test Stable
+    ${a}    Set Variable    1
+    ${boolean}    Evaluate    ${a} == 1
+    Should Be True    ${boolean}
+
+Test Unstable
+    ${a}    Generate Random String    1    [NUMBERS]
+    ${boolean}    Evaluate    (${a} % 2) == 0
+    Should Be True    ${boolean}

@@ -1,0 +1,13 @@
+*** Settings ***
+Test Template     print
+
+*** Test Cases ***    user    pass
+case1                 123     aa
+
+case2                 456     bb
+
+*** Keywords ***
+print
+    [Arguments]    ${user}    ${pass}
+    log    ${user}
+    log    ${pass}
